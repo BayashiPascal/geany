@@ -1649,10 +1649,15 @@ void sidebar_focus_symbols_tab(void)
 	if (ui_prefs.sidebar_visible && interface_prefs.sidebar_symbol_visible)
 	{
 		GtkNotebook *notebook = GTK_NOTEBOOK(main_widgets.sidebar_notebook);
-		GtkWidget *symbol_list_scrollwin = gtk_notebook_get_nth_page(notebook, TREEVIEW_SYMBOL);
-
 		gtk_notebook_set_current_page(notebook, TREEVIEW_SYMBOL);
-		gtk_widget_grab_focus(gtk_bin_get_child(GTK_BIN(symbol_list_scrollwin)));
+		GtkWidget *vbox = gtk_notebook_get_nth_page(notebook, TREEVIEW_SYMBOL);
+		GList *vbox_children = gtk_container_get_children(GTK_CONTAINER(vbox));
+		GtkWidget *scrollwin = g_list_nth_data(vbox_children, 1);
+		GList *scrollwin_children = gtk_container_get_children(GTK_CONTAINER(scrollwin));
+		GtkWidget *tree_symbols = g_list_nth_data(scrollwin_children, 0);
+		gtk_widget_grab_focus(tree_symbols);
+		g_list_free(scrollwin_children);
+		g_list_free(vbox_children);
 	}
 }
 
